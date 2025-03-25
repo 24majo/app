@@ -3,7 +3,8 @@ import { TextInput, PasswordInput, Image } from '@mantine/core'
 import { IconLock } from '@tabler/icons-react'
 import { IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
 import { BrowserRouter, createBrowserRouter } from 'react-router-dom'
-import './App.css'
+// import './App.css'
+import './styles/App.css'
 import { useNavigate } from 'react-router-dom'
 import Dashboard from './principal/dashboard';
 
