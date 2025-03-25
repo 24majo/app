@@ -1,23 +1,20 @@
-import React, { useState } from 'react';
-import cx from 'clsx';
-import { MantineProvider, Container, createTheme, Button } from '@mantine/core';
-import classes from './styles/Demo.module.css';
-import { TextInput, PasswordInput } from '@mantine/core';
-import { IconAt } from '@tabler/icons-react';
-import { IconEyeCheck, IconEyeOff } from '@tabler/icons-react';
-import './App.css';
+import { Container, Button, Checkbox, Title, Text } from '@mantine/core'
+import { TextInput, PasswordInput, Image } from '@mantine/core'
+import { IconLock } from '@tabler/icons-react'
+import { IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
+import { BrowserRouter, createBrowserRouter } from 'react-router-dom'
+import './App.css'
+import { useNavigate } from 'react-router-dom'
+import Dashboard from './principal/dashboard';
 
 function App() {
-  const icon = <IconAt size={16} />
-  const theme = createTheme({
-    components: {
-      Container: Container.extend({
-        classNames: (_, { size }) => ({
-          root: cx({ [classes.responsiveContainer]: size === 'responsive' }),
-        }),
-      }),
-    },
-  });
+  const navigate = useNavigate(); 
+
+  const enter = () => {
+    navigate('/dashboard'); 
+  };
+
+  const icon = <IconLock size={18} stroke={1.5} />;
 
   const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) =>
     reveal ? (
@@ -26,50 +23,70 @@ function App() {
       <IconEyeCheck style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
     );
 
-  const [email, setEmail] = useState('');
-  const [pass, setPass] = useState('');
-  
-  const Cancelar = () => {
-    setEmail('');
-    setPass('');
-  };
-
   return (
-    <MantineProvider theme={theme}>
-      <Container size="responsive" bg="var(--mantine-color-blue-light)">
-        <TextInput
-          leftSectionPointerEvents="none"
-          leftSection={icon}
-          label ="Correo"
-          placeholder="nombre@dominio.com"
-          value={email}
-          error="Correo inválido"
-          onChange={(e) => setEmail(e.target.value)}
-        />
+      <div className="flex-container">
+        <Container size="responsive" className='main-container'>
+    
+          <Title
+            style={{padding: '0vh 3vh'}}
+          >
+            Ingresar a mi cuenta
+          </Title>
 
-        <PasswordInput
-          maw={320}
-          mx="auto"
-          label="Contraseña"
-          placeholder="Contraseña"
-          defaultValue=""
-          visibilityToggleIcon={VisibilityToggleIcon}
-          value={pass}
-          onChange={(e) => setPass(e.target.value)}
-        />
+          <Text
+            style={{padding: '0vh 3vh'}}>
+            Accede a tu cuenta por medio de tu nombre de usuario y contraseña.
+          </Text>
 
-        <Button 
-          variant="filled" 
-          size="md" 
-          radius="md">Ingresar</Button>
-        <Button 
-          variant="filled" 
-          color="gray" 
-          size="md" 
-          radius="md"
-          onClick={Cancelar}>Cancelar</Button>
-      </Container>
-    </MantineProvider>
+          <TextInput
+            leftSectionPointerEvents="none"
+            label ="Nombre de Usuario"
+            placeholder="Ingresa tu usuario"
+            name='user'
+            required
+            style={{padding: '5vh 5vh 5vh 3vh'}}
+            labelProps={{ style: { fontWeight: 'bold' } }}
+          />
+
+          <PasswordInput
+            mx="auto"
+            label="Contraseña"
+            placeholder="Contraseña"
+            defaultValue=""
+            name='pass'
+            leftSection={icon}
+            visibilityToggleIcon={VisibilityToggleIcon}
+            required
+            style={{padding:'0vh 5vh 5vh 3vh'}}
+            labelProps={{ style: { fontWeight: 'bold' } }}
+          />
+
+          <Checkbox
+            label="Recordar mi cuenta y mis datos para un próximo ingreso"
+            name='remember'
+            required
+            style={{padding: '0vh 3vh', color: '#868E96'}}
+            color='#228BE6'
+          />
+
+          <Button 
+            variant="filled" 
+            size="md" 
+            radius="md"
+            style={{ 
+              marginTop: '5vh',
+              marginLeft: '3vh',
+              width: '92%',
+            }}
+            color='#228BE6'
+            onClick={enter}
+          >
+            Entrar
+          </Button>
+        </Container>
+
+        <Container size="responsive" className='image-container'></Container>
+      </div>
   );
 }
 
