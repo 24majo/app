@@ -1,31 +1,35 @@
-import { IconCalendarStats, IconFileAnalytics, IconNotes, IconPresentationAnalytics} from '@tabler/icons-react';
-import { Code, Group, ScrollArea, Button, Container, Text, Skeleton, AppShell, Burger} from '@mantine/core';
-import { useNavigate } from 'react-router-dom';
-// import { Redirection } from '../components/redirections';
-import { UserButton } from '../components/user'
+import { Code, ScrollArea, Button, AppShell, Burger, useMantineTheme, Menu } from '@mantine/core';
+import { IconChartLine, IconUsers, IconCube, IconWorld } from '@tabler/icons-react';
+import { UserButton } from './user'
 import classes from '../styles/NavbarNested.module.css';
 import { useDisclosure } from '@mantine/hooks';
+import { TableContent } from './content_table'
   
 const mockdata = [
-  { label: 'Main', icon: IconNotes, initiallyOpened: true, link:'' },
-  { label: 'Users', icon: IconCalendarStats, link:'' },
-  { label: 'Employees', icon: IconPresentationAnalytics, link:'../principal/employees.tsx' },
-  { label: 'Factories', icon: IconFileAnalytics, link:'' }
+  { label: 'Main', icon: IconChartLine, initiallyOpened: true},
+  { label: 'Users', icon: IconUsers},
+  { label: 'Employees', icon: IconCube},
+  { label: 'Factories', icon: IconWorld}
 ];
 
 export function Lateral() {
-  const [opened, { toggle }] = useDisclosure();
-  const navigate = useNavigate();
+  const theme = useMantineTheme()
+  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   const links = mockdata.map((item) => (
     <Button
       variant="subtle"
-      color="blue"
-      // leftIcon={<item.icon />}
+      color="black"
       key={item.label}
       className={classes.linkButton}
       fullWidth 
+      style={{ 
+        display: 'flex', 
+        justifyContent: 'flex-start', 
+        paddingLeft: 25 }}
     >
+      <item.icon style={{ marginRight: 10 }} />
       {item.label}
     </Button>
   ));
@@ -34,49 +38,42 @@ export function Lateral() {
   return (
     <AppShell
       header={{ height: 60 }}
-      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+      navbar=
+      {{ 
+        width: desktopOpened ? 227 : 70, 
+        breakpoint: 'sm', 
+      }}
       padding="md"
     >
 
-      <AppShell.Navbar p="md">
-        <div className={classes.header}>
-        
-          <ScrollArea>
-            {/* <Logo style={{ width: 120 }} /> */}
-            <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
-            <Code fw={700}>v1.0.0</Code>
-          </ScrollArea>
-        </div>
+      <AppShell.Header>
+        <ScrollArea>
+          <Burger opened={desktopOpened} onClick={toggleDesktop} size="sm" />
+          { (mobileOpened || desktopOpened) && (
+            <Code fw={700} className={classes.code}>
+              v1.0.0
+            </Code>
+          )}
+        </ScrollArea>
+      </AppShell.Header>
+
+      <AppShell.Navbar p="md"> 
 
         <ScrollArea className={classes.links}>
           <div className={classes.linksInner}>{links}</div>
         </ScrollArea>
 
-        <div className={classes.footer}>
-          <UserButton />
-        </div>
-      </AppShell.Navbar>
+        <AppShell.Section
+          style={{
+            borderBlockStart: `1px solid ${theme.colors.gray[3]}`,
+          }}
+        >
 
+          <UserButton />
+        </AppShell.Section>
+          
+      </AppShell.Navbar>
     </AppShell>
 
-
-    // <div>
-    //   <nav className={classes.navbar}>
-        // <div className={classes.header}>
-        //   <ScrollArea>
-        //     {/* <Logo style={{ width: 120 }} /> */}
-        //     <Code fw={700}>v1.0.0</Code>
-        //   </ScrollArea>
-        // </div>
-
-        // <ScrollArea className={classes.links}>
-        //   <div className={classes.linksInner}>{links}</div>
-        // </ScrollArea>
-
-        // <div className={classes.footer}>
-        //   <UserButton />
-        // </div>
-    //   </nav>
-    // </div>
   );
 }
