@@ -1,3 +1,9 @@
-.Dashboard{
-    background-color: aquamarine;
-}
+.principal {
+    display: flex;
+    height: 100vh; 
+  }
+  
+  .content {
+    flex-grow: 1; 
+    padding: 20px; 
+  }
