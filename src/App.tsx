@@ -2,10 +2,10 @@ import { Container, Button, Checkbox, Title, Text } from '@mantine/core'
 import { TextInput, PasswordInput, Image } from '@mantine/core'
 import { IconLock } from '@tabler/icons-react'
 import { IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
-import { BrowserRouter, createBrowserRouter } from 'react-router-dom'
 // import './App.css'
 import './styles/App.css'
 import { useNavigate } from 'react-router-dom'
+import Main from './Main';
 import Dashboard from './principal/dashboard';
 
 function App() {
