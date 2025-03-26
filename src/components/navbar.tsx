@@ -1,9 +1,8 @@
-import { Code, ScrollArea, Button, AppShell, Burger, useMantineTheme, Menu } from '@mantine/core';
+import { Code, ScrollArea, Button, AppShell, Burger, useMantineTheme } from '@mantine/core';
 import { IconChartLine, IconUsers, IconCube, IconWorld } from '@tabler/icons-react';
 import { UserButton } from './user'
 import classes from '../styles/NavbarNested.module.css';
 import { useDisclosure } from '@mantine/hooks';
-import { TableContent } from './content_table'
   
 const mockdata = [
   { label: 'Main', icon: IconChartLine, initiallyOpened: true},
@@ -14,7 +13,7 @@ const mockdata = [
 
 export function Lateral() {
   const theme = useMantineTheme()
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [mobileOpened] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   const links = mockdata.map((item) => (
