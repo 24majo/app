@@ -1,10 +1,10 @@
 import { IconCalendarStats, IconFileAnalytics, IconNotes, IconPresentationAnalytics} from '@tabler/icons-react';
-import { Code, Group, ScrollArea, Button } from '@mantine/core';
+import { Code, Group, ScrollArea, Button, Container, Text, Skeleton, AppShell, Burger} from '@mantine/core';
 import { useNavigate } from 'react-router-dom';
 // import { Redirection } from '../components/redirections';
-//   import { UserButton } from '../UserButton/UserButton';
-  // import { Logo } from './Logo';
+import { UserButton } from '../components/user'
 import classes from '../styles/NavbarNested.module.css';
+import { useDisclosure } from '@mantine/hooks';
   
 const mockdata = [
   { label: 'Main', icon: IconNotes, initiallyOpened: true, link:'' },
@@ -13,12 +13,9 @@ const mockdata = [
   { label: 'Factories', icon: IconFileAnalytics, link:'' }
 ];
 
-const Lateral = () => {
+export function Lateral() {
+  const [opened, { toggle }] = useDisclosure();
   const navigate = useNavigate();
-
-  const handleNavigation = (link: string) => {
-    navigate(link); // Navegamos a la ruta proporcionada
-  };
 
   const links = mockdata.map((item) => (
     <Button
@@ -26,8 +23,8 @@ const Lateral = () => {
       color="blue"
       // leftIcon={<item.icon />}
       key={item.label}
-      onClick={() => handleNavigation(item.link)}
       className={classes.linkButton}
+      fullWidth 
     >
       {item.label}
     </Button>
@@ -35,23 +32,51 @@ const Lateral = () => {
   // const links = mockdata.map((item) => <Redirection {...item} key={item.label} />);
 
   return (
-    <nav className={classes.navbar}>
-      <div className={classes.header}>
-        <ScrollArea>
-          {/* <Logo style={{ width: 120 }} /> */}
-          <Code fw={700}>v1.0.0</Code>
+    <AppShell
+      header={{ height: 60 }}
+      navbar={{ width: 300, breakpoint: 'sm', collapsed: { mobile: !opened } }}
+      padding="md"
+    >
+
+      <AppShell.Navbar p="md">
+        <div className={classes.header}>
+        
+          <ScrollArea>
+            {/* <Logo style={{ width: 120 }} /> */}
+            <Burger opened={opened} onClick={toggle} aria-label="Toggle navigation" />
+            <Code fw={700}>v1.0.0</Code>
+          </ScrollArea>
+        </div>
+
+        <ScrollArea className={classes.links}>
+          <div className={classes.linksInner}>{links}</div>
         </ScrollArea>
-      </div>
 
-      <ScrollArea className={classes.links}>
-        <div className={classes.linksInner}>{links}</div>
-      </ScrollArea>
+        <div className={classes.footer}>
+          <UserButton />
+        </div>
+      </AppShell.Navbar>
 
-      <div className={classes.footer}>
-        {/* <UserButton /> */}
-      </div>
-    </nav>
+    </AppShell>
+
+
+    // <div>
+    //   <nav className={classes.navbar}>
+        // <div className={classes.header}>
+        //   <ScrollArea>
+        //     {/* <Logo style={{ width: 120 }} /> */}
+        //     <Code fw={700}>v1.0.0</Code>
+        //   </ScrollArea>
+        // </div>
+
+        // <ScrollArea className={classes.links}>
+        //   <div className={classes.linksInner}>{links}</div>
+        // </ScrollArea>
+
+        // <div className={classes.footer}>
+        //   <UserButton />
+        // </div>
+    //   </nav>
+    // </div>
   );
 }
-
-export default Lateral;
