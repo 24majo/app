@@ -6,6 +6,7 @@ import {
   keys,
   ScrollArea,
   Table,
+  Title,
   Text,
   TextInput,
   UnstyledButton,
@@ -13,7 +14,8 @@ import {
   Drawer,
   Modal,
   NativeSelect,
-  PasswordInput 
+  PasswordInput,
+  Container 
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
@@ -148,18 +150,14 @@ export function TableContent() {
       <Table.Td>{row.email}</Table.Td>
       <Table.Td>{row.company}</Table.Td>
       <Table.Td>
-        <IconEdit
-          onClick={openDrawer}
-        />
-        <IconTrash
-          onClick={openModal}
-        />
+        <IconEdit size={20} color="gray" onClick={openDrawer} style={{marginRight: 7}}/>
+        <IconTrash size={20} color="gray" onClick={openModal}/>
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
-    <ScrollArea>
+    <div className={classes.main}>
       <Modal 
         opened={Delete} 
         onClose={closeModal} 
@@ -193,87 +191,103 @@ export function TableContent() {
         </Button>
       </Modal>
 
-      <Drawer
+      <Drawer.Root
+        className={classes.draw_edit}
         position="right"
         opened={Edit}
         onClose={closeDrawer}
-        title="Editar"
-        overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
+        // title="Editar"
+        // overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
       >
+        <Drawer.Overlay />
+        <Drawer.Content>
+            <Drawer.Header>
+              <Drawer.Title>Editar</Drawer.Title>
+              <Drawer.CloseButton />
+            </Drawer.Header>
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            label ="Nombre Completo"
-            placeholder="Ingresa tu nombre con apellidos"
-            name='name'
-            required
-            style={{padding: '5vh 5vh 5vh 3vh'}}
-            labelProps={{ style: { fontWeight: 'bold' } }}
-          />
+            <Drawer.Body>
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="Nombre Completo"
+                placeholder="Ingresa tu nombre con apellidos"
+                name='name'
+                required
+                style={{padding: '5vh 5vh 5vh 3vh'}}
+                labelProps={{ style: { fontWeight: 'bold' } }}
+              />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            label ="Nombre de Usuario"
-            placeholder="Ingresa tu usuario"
-            name='user'
-            required
-            style={{padding: '5vh 5vh 5vh 3vh'}}
-            labelProps={{ style: { fontWeight: 'bold' } }}
-          />
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="Nombre de Usuario"
+                placeholder="Ingresa tu usuario"
+                name='user'
+                required
+                style={{padding: '5vh 5vh 5vh 3vh'}}
+                labelProps={{ style: { fontWeight: 'bold' } }}
+              />
 
-          <NativeSelect
-            label="Rol"
-            value={value}
-            onChange={(event) => setValue(event.currentTarget.value)}
-            data={['Administrador', 'Usuario']}
-            name='rol'
-            withAsterisk
-          />
+              <NativeSelect
+                label="Rol"
+                value={value}
+                onChange={(event) => setValue(event.currentTarget.value)}
+                data={['Administrador', 'Usuario']}
+                name='rol'
+                withAsterisk
+              />
 
-          <TextInput
-            leftSectionPointerEvents="none"
-            label ="Correo"
-            placeholder="nombre@dominio.com"
-            name='mail'
-            required
-            style={{padding: '5vh 5vh 5vh 3vh'}}
-            labelProps={{ style: { fontWeight: 'bold' } }}
-          />
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="Correo"
+                placeholder="nombre@dominio.com"
+                name='mail'
+                required
+                style={{padding: '5vh 5vh 5vh 3vh'}}
+                labelProps={{ style: { fontWeight: 'bold' } }}
+              />
 
-          <PasswordInput
-            mx="auto"
-            label="Contraseña"
-            placeholder="Contraseña"
-            defaultValue=""
-            name='pass'
-            leftSection={icon}
-            visibilityToggleIcon={VisibilityToggleIcon}
-            required
-            style={{padding:'0vh 5vh 5vh 3vh'}}
-            labelProps={{ style: { fontWeight: 'bold' } }}
-          />
-        
-        <Button>Aceptar</Button>
-      </Drawer>
+              <PasswordInput
+                mx="auto"
+                label="Contraseña"
+                placeholder="Contraseña"
+                defaultValue=""
+                name='pass'
+                leftSection={icon}
+                visibilityToggleIcon={VisibilityToggleIcon}
+                required
+                style={{padding:'0vh 5vh 5vh 3vh'}}
+                labelProps={{ style: { fontWeight: 'bold' } }}
+              />
+            
+              <Button>Aceptar</Button>
+            </Drawer.Body>
+
+        </Drawer.Content>
+      </Drawer.Root>
       
-      <Text>
-        Lista de Fabricas
-      </Text>
+      <div className={classes.header}>
+        <Title order={2}>Lista de Fabricas</Title>
 
-      <Button className={classes.Add}>
-        <IconPlus/>
-        Agregar
-      </Button>
+        <Button variant="light">
+          <IconPlus/>
+          Agregar
+        </Button>
+      </div>
+
+      <div className={classes.search}>
+          <TextInput
+            placeholder="Search by any field"
+            mb="md"
+            leftSection={<IconSearch size={16} stroke={1.5} />}
+            value={search}
+            onChange={handleSearchChange}
+            style={{
+              width: '93%'
+            }}
+          />
+          <Button> <IconSearch/> </Button>
+      </div>
       
-      <TextInput
-        placeholder="Search by any field"
-        mb="md"
-        leftSection={<IconSearch size={16} stroke={1.5} />}
-        value={search}
-        onChange={handleSearchChange}
-      />
-      <Button> <IconSearch/> </Button>
-
       <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
         <Table.Tbody>
           <Table.Tr>
@@ -307,13 +321,13 @@ export function TableContent() {
             <Table.Tr>
               <Table.Td colSpan={Object.keys(data[0]).length}>
                 <Text fw={500} ta="center">
-                  No hay
+                  No hay registros
                 </Text>
               </Table.Td>
             </Table.Tr>
           )}
         </Table.Tbody>
       </Table>
-    </ScrollArea>
+    </div>
   );
 }

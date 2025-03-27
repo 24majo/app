@@ -1,7 +1,31 @@
+*{
+  font-family: 'Roboto', sans-serif;
+}
+
+.main {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.search {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
 .th {
-    padding: 0;
-  }
-  
+  padding: 0;
+}
+
 .control {
   width: 100%;
   padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
@@ -17,14 +41,8 @@
   border-radius: 21px;
 }
 
-.Add{
-  display: flex;
-  height: 32px;
-  padding: 0px var(--Padding-padding-sm, 16px);
-  justify-content: center;
-  align-items: center;
-  gap: var(--Spacing-spacing-sm, 8px);
-  border-radius: var(--Radius-radius-sm, 4px);
-  background: var(--Background-Primary-light, rgba(34, 139, 230, 0.10));
-  color: #228BE6
+.draw_edit {
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
 }
