@@ -29,7 +29,9 @@ export function Lateral() {
         paddingLeft: 25 }}
     >
       <item.icon style={{ marginRight: 10 }} />
-      {item.label}
+      { (desktopOpened || mobileOpened) ? (
+        <span>{item.label}</span> 
+      ) : null }
     </Button>
   ));
   // const links = mockdata.map((item) => <Redirection {...item} key={item.label} />);
