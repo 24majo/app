@@ -1,8 +1,8 @@
-import { Code, ScrollArea, Button, AppShell, Burger, useMantineTheme } from '@mantine/core';
-import { IconChartLine, IconUsers, IconCube, IconWorld } from '@tabler/icons-react';
-import { UserButton } from './user'
+import { Code, ScrollArea, Button, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge } from '@mantine/core';
+import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout } from '@tabler/icons-react';
 import classes from '../styles/NavbarNested.module.css';
 import { useDisclosure } from '@mantine/hooks';
+import { forwardRef } from 'react';
   
 const mockdata = [
   { label: 'Main', icon: IconChartLine, initiallyOpened: true},
@@ -11,10 +11,47 @@ const mockdata = [
   { label: 'Factories', icon: IconWorld}
 ];
 
+interface UserButtonProps extends React.ComponentPropsWithoutRef<'button'> {
+  letter: string;
+  name: string;
+  role: string;
+  isDesktop: boolean;
+}
+
+const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
+  ({ letter, name, role, isDesktop, ...others }: UserButtonProps, ref) => (
+    <UnstyledButton
+      ref={ref}
+      style={{
+        padding: 'var(--mantine-spacing-md)',
+        color: 'var(--mantine-color-text)',
+        borderRadius: 'var(--mantine-radius-sm)',
+      }}
+      {...others}
+    >
+      <Group>
+        <Avatar color="blue" key={name} name={name}></Avatar>
+      
+        <div style={{ flex: 1}}>
+          {isDesktop && (
+            <>
+            <Text size="sm" fw={500}> {name} </Text>
+            <Badge variant="light" color="blue" radius="lg" size='xs'>{role}</Badge>
+            <IconChevronCompactUp size={16} style={{marginLeft:30}}/>
+            
+            </>
+          )}
+        </div>
+
+      </Group>
+    </UnstyledButton>
+  )
+);
+
 export function Lateral() {
-  const theme = useMantineTheme()
   const [mobileOpened] = useDisclosure();
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  
 
   const links = mockdata.map((item) => (
     <Button
@@ -34,47 +71,55 @@ export function Lateral() {
       ) : null }
     </Button>
   ));
-  // const links = mockdata.map((item) => <Redirection {...item} key={item.label} />);
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 30 }}
       navbar=
       {{ 
-        width: desktopOpened ? 227 : 70, 
+        width: desktopOpened ? 227 : 80, 
         breakpoint: 'sm', 
       }}
-      padding="md"
+      layout='alt'
     >
 
-      <AppShell.Header>
-        <ScrollArea>
+      <AppShell.Navbar p="md" style={{ backgroundColor: '#F8F9FA' }}> 
+
+        <ScrollArea className={classes.burguer}>
           <Burger opened={desktopOpened} onClick={toggleDesktop} size="sm" />
-          { (mobileOpened || desktopOpened) && (
-            <Code fw={700} className={classes.code}>
-              v1.0.0
-            </Code>
+          {(mobileOpened || desktopOpened) && (
+            <Code fw={700} className={classes.code}> v1.0.0 </Code>
           )}
         </ScrollArea>
-      </AppShell.Header>
-
-      <AppShell.Navbar p="md"> 
 
         <ScrollArea className={classes.links}>
           <div className={classes.linksInner}>{links}</div>
         </ScrollArea>
+        
+        <ScrollArea className={classes.user}>
+          <Menu>
+            <Menu.Target>
+              <UserButton
+                letter="Nombre"
+                name="Nombre"
+                role="Administrador"
+                isDesktop={desktopOpened}
+              />
+            </Menu.Target>
 
-        <AppShell.Section
-          style={{
-            borderBlockStart: `1px solid ${theme.colors.gray[3]}`,
-          }}
-        >
+            <Menu.Dropdown>
+              <Menu.Item
+                color="red"
+                leftSection={<IconLogout size={14} />}
+              >
+                Cerrar Sesión
+              </Menu.Item>
+            </Menu.Dropdown>
 
-          <UserButton />
-        </AppShell.Section>
-          
+          </Menu>
+        </ScrollArea>
+        
       </AppShell.Navbar>
     </AppShell>
-
   );
 }
