@@ -24,25 +24,27 @@
 
 .th {
   padding: 0;
+  font-weight: bold;
 }
 
-.control {
-  width: 100%;
-  padding: var(--mantine-spacing-xs) var(--mantine-spacing-md);
+.actionsTh {
+  width: 80px;
+  text-align: center;
+}
 
-  @mixin hover {
-    background-color: light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6));
+.actionsTd {
+  width: 80px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
   }
-}
 
-.icon {
-  width: 21px;
-  height: 21px;
-  border-radius: 21px;
-}
-
-.draw_edit {
-  margin: 0;
-  padding: 0;
-  justify-content: space-between;
+  table {
+    width: 100%;
+    min-width: 600px;
+  }
 }

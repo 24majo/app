@@ -69,7 +69,7 @@ export function Lateral() {
         <NavLink
           label={!isMobile && desktopOpened ? (
             <>
-              <IconChartLine /> <span>Main</span>
+              <IconChartLine style={{marginRight: 4}} /> <span>Main</span>
             </>
           ) : (
             <IconChartLine />
@@ -80,7 +80,7 @@ export function Lateral() {
         <NavLink
           label={!isMobile && desktopOpened ? (
             <>
-              <IconCube /> <span>Employees</span>
+              <IconCube style={{marginRight: 4}} /> <span>Employees</span>
             </>
           ) : (
             <IconCube />
@@ -91,7 +91,7 @@ export function Lateral() {
         <NavLink
           label={!isMobile && desktopOpened ? (
             <>
-              <IconUsers /> <span>Users</span>
+              <IconUsers style={{marginRight: 4}} /> <span>Users</span>
             </>
           ) : (
             <IconUsers />
@@ -102,7 +102,7 @@ export function Lateral() {
         <NavLink
           label={!isMobile && desktopOpened ? (
             <>
-              <IconWorld /> <span>Factories</span>
+              <IconWorld style={{marginRight: 4}} /> <span>Factories</span>
             </>
           ) : (
             <IconWorld />
