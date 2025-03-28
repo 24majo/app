@@ -1,6 +1,5 @@
 import { AppShell } from '@mantine/core'
 import {Lateral} from '../components/navbar'
-import { TableContent } from '../components/content_table';
 import '../styles/Dashboard.css'
 
 function Dashboard(){
@@ -10,7 +9,7 @@ function Dashboard(){
             <div className='content'>
                 <AppShell>
                     <AppShell.Main>
-                        <TableContent/>
+                        Main
                     </AppShell.Main>
                 </AppShell>
             </div>

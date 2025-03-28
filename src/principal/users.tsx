@@ -1,19 +1,18 @@
 import { AppShell } from '@mantine/core'
 import {Lateral} from '../components/navbar'
-import '../styles/Dashboard.css'
-import { Table_employ } from '../tables/table_employees';
+import { Table_user } from '../tables/table_users'
 
-export function Employ(){
+export function Users(){
     return(
         <div className='principal'>
             <Lateral />
             <div className='content'>
                 <AppShell>
                     <AppShell.Main>
-                        <Table_employ/>
+                        <Table_user/>
                     </AppShell.Main>
                 </AppShell>
             </div>
         </div>
-    );
+    )
 }
