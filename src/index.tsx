@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Main from './Main'
+import Main from './Routes'
 import reportWebVitals from './reportWebVitals';
 import { MantineProvider, createTheme } from '@mantine/core';
 import '@mantine/core/styles.css';
