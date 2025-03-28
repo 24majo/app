@@ -1,15 +1,9 @@
-import { Code, ScrollArea, Button, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge } from '@mantine/core';
+import { Code, ScrollArea, Button, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink } from '@mantine/core';
 import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout } from '@tabler/icons-react';
 import classes from '../styles/NavbarNested.module.css';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { forwardRef } from 'react';
-  
-const mockdata = [
-  { label: 'Main', icon: IconChartLine, initiallyOpened: true},
-  { label: 'Users', icon: IconUsers},
-  { label: 'Employees', icon: IconCube},
-  { label: 'Factories', icon: IconWorld}
-];
+import { useNavigate } from 'react-router-dom';
 
 interface UserButtonProps extends React.ComponentPropsWithoutRef<'button'> {
   letter: string;
@@ -52,23 +46,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 export function Lateral() {
   const isMobile = useMediaQuery('(max-width: 900px)');
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
-
-  const links = mockdata.map((item) => (
-    <Button
-      variant="subtle"
-      color="black"
-      key={item.label}
-      className={classes.linkButton}
-      fullWidth
-      style={{ 
-        display: 'flex', 
-        justifyContent: 'flex-start', 
-        paddingLeft: 25 }}
-    >
-      <item.icon style={{ marginRight: 10 }} />
-      {(!isMobile && desktopOpened) && <span>{item.label}</span>}
-    </Button>
-  ));
+  const navigate = useNavigate()
 
   return (
     <AppShell
@@ -83,12 +61,32 @@ export function Lateral() {
         <ScrollArea className={classes.burguer}>
           <Burger opened={desktopOpened} onClick={toggleDesktop} size="sm" />
           {!isMobile && desktopOpened && (
-            <Code fw={700} className={classes.code}> v1.0.0 </Code>
+            <Code fw={700} className={classes.code}> v2.0.0 </Code>
           )}
         </ScrollArea>
 
         <ScrollArea className={classes.links}>
-          <div className={classes.linksInner}>{links}</div>
+          <NavLink
+            label={<><IconChartLine /> Main </>}
+            onClick={() => navigate('/dashboard')}
+            // initiallyOpened={true}
+          />
+
+          <NavLink
+            label={<><IconCube /> Employees </>}
+            onClick={() => navigate('/dashboard/employees')}
+          />
+
+          <NavLink
+            label={<><IconUsers /> Users </>}
+            onClick={() => navigate('/dashboard/users')}
+          />
+          
+          <NavLink
+            label={<><IconWorld /> Factories </>}
+            onClick={() => navigate('/dashboard/factories')}
+          />
+          
         </ScrollArea>
         
         <ScrollArea className={classes.user}>
