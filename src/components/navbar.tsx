@@ -1,6 +1,6 @@
-import { Code, ScrollArea, Button, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink } from '@mantine/core';
+import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink } from '@mantine/core';
 import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout } from '@tabler/icons-react';
-import classes from '../styles/NavbarNested.module.css';
+import classes from '../styles/Navbar.module.css';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -66,26 +66,49 @@ export function Lateral() {
         </ScrollArea>
 
         <ScrollArea className={classes.links}>
-          <NavLink
-            label={<><IconChartLine /> Main </>}
-            onClick={() => navigate('/dashboard')}
-            // initiallyOpened={true}
-          />
+        <NavLink
+          label={!isMobile && desktopOpened ? (
+            <>
+              <IconChartLine /> <span>Main</span>
+            </>
+          ) : (
+            <IconChartLine />
+          )}
+          onClick={() => navigate('/dashboard')}
+        />
 
-          <NavLink
-            label={<><IconCube /> Employees </>}
-            onClick={() => navigate('/dashboard/employees')}
-          />
+        <NavLink
+          label={!isMobile && desktopOpened ? (
+            <>
+              <IconCube /> <span>Employees</span>
+            </>
+          ) : (
+            <IconCube />
+          )}
+          onClick={() => navigate('/dashboard/employees')}
+        />
 
-          <NavLink
-            label={<><IconUsers /> Users </>}
-            onClick={() => navigate('/dashboard/users')}
-          />
-          
-          <NavLink
-            label={<><IconWorld /> Factories </>}
-            onClick={() => navigate('/dashboard/factories')}
-          />
+        <NavLink
+          label={!isMobile && desktopOpened ? (
+            <>
+              <IconUsers /> <span>Users</span>
+            </>
+          ) : (
+            <IconUsers />
+          )}
+          onClick={() => navigate('/dashboard/users')}
+        />
+
+        <NavLink
+          label={!isMobile && desktopOpened ? (
+            <>
+              <IconWorld /> <span>Factories</span>
+            </>
+          ) : (
+            <IconWorld />
+          )}
+          onClick={() => navigate('/dashboard/factories')}
+        />
           
         </ScrollArea>
         

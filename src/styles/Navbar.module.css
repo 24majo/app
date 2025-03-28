@@ -16,17 +16,11 @@
 
 .links {
   flex: 1;
-  margin-left: calc(var(--mantine-spacing-md) * -1);
-  margin-right: calc(var(--mantine-spacing-md) * -1);
+  margin-top: 5vh;
 }
 
 .user {
   margin-left: calc(var(--mantine-spacing-md) * -1);
   margin-right: calc(var(--mantine-spacing-md) * -1);
   margin-bottom: calc(var(--mantine-spacing-md) * -1);
-}
-
-.linksInner {
-  padding-top: var(--mantine-spacing-xl);
-  padding-bottom: var(--mantine-spacing-xl);
 }
