@@ -1,22 +1,9 @@
 import { useState } from 'react';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, IconPlus, IconEdit, IconTrash } from '@tabler/icons-react';
-import {
-  Center,
-  Group,
-  keys,
-  Table,
-  Title,
-  Text,
-  TextInput,
-  UnstyledButton,
-  Button,
-  Drawer,
-  Modal,
-  NativeSelect,
-  PasswordInput
-} from '@mantine/core';
+import { Center, Group, keys, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, NativeSelect, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
+import { ModalDelete } from '../components/modal-delete';
 import { IconLock, IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
 
 interface RowData {
@@ -36,7 +23,7 @@ interface ThProps {
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
   return (
-    <Table.Th className={classes.th}>
+    <Table.Th>
       <UnstyledButton onClick={onSort} className={classes.control}>
         <Group justify="space-between">
           <Text fw={500} fz="sm">
@@ -126,8 +113,21 @@ export function Table_user() {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const [value, setValue] = useState('');
-  const icon = <IconLock size={18} stroke={1.5} />;
+  const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
+  const [formData, setFormData] = useState<RowData>({ name: '', user: '', email: '', rol: '' });
+  const [selectedRowForDelete, setSelectedRowForDelete] = useState<RowData | null>(null);
+
+  const handleDeleteClick = (row: RowData) => {
+    setSelectedRowForDelete(row);
+    openModal();
+  };
+
+  const deleteRow = () => {
+    if (selectedRowForDelete) {
+      setSortedData((prev) => prev.filter((item) => item.email !== selectedRowForDelete.email));
+    }
+    closeModal();
+  };
 
   const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) =>
     reveal ? (
@@ -143,10 +143,25 @@ export function Table_user() {
     setSortedData(sortData(data, { sortBy: field, reversed, search }));
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.currentTarget;
-    setSearch(value);
-    setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
+  const handleSave = () => {
+    if (selectedRow) {
+      setSortedData(prevData => prevData.map(user => user.email === selectedRow.email ? formData : user));
+    } else {
+      setSortedData(prevData => [...prevData, formData]);
+    }
+    closeDrawer();
+  };
+
+  const handleAddClick = () => {
+    setSelectedRow(null);
+    setFormData({ name: '', user: '', email: '', rol: '' });
+    openDrawer();
+  };
+
+  const handleEditClick = (row: RowData) => {
+    setSelectedRow(row);
+    setFormData(row);
+    openDrawer();
   };
 
   const rows = sortedData.map((row) => (
@@ -155,148 +170,109 @@ export function Table_user() {
       <Table.Td>{row.user}</Table.Td>
       <Table.Td>{row.email}</Table.Td>
       <Table.Td>{row.rol}</Table.Td>
-      <Table.Td>
-        <IconEdit size={20} color="gray" onClick={openDrawer} style={{marginRight: 7}}/>
-        <IconTrash size={20} color="gray" onClick={openModal}/>
+      <Table.Td className={classes.actions}>
+        <IconEdit size={20} color="gray" onClick={() => handleEditClick(row)} style={{marginRight: 7}}/>
+        <IconTrash size={20} color="gray" onClick={() => handleDeleteClick(row)} />
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <div className={classes.main}>
-      <Modal 
-        opened={Delete} 
-        onClose={closeModal} 
-        title="Eliminar"
-        centered
-      >
-        <Text
-          style=
-          {{
-            marginBottom: 20  
-          }}
-        >¿Está seguro que quiere eliminar esto?
-        </Text>
+      <ModalDelete opened={Delete} onClose={closeModal} onConfirm={deleteRow} />
 
-        <Button
-          color='red'
-          fullWidth
-          style={{
-            marginBottom: 5
-          }}
-        >
-          Aceptar
-        </Button>
-
-        <Button
-          variant='transparent'
-          color='gray'
-          fullWidth
-        >
-          Cancelar
-        </Button>
-      </Modal>
-
-      <Drawer.Root
-        className={classes.draw_edit}
-        position="right"
-        opened={Edit}
-        onClose={closeDrawer}
-        // title="Editar"
-        // overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
-      >
+      <Drawer.Root opened={Edit} onClose={closeDrawer} position="right">
         <Drawer.Overlay />
         <Drawer.Content>
             <Drawer.Header>
-              <Drawer.Title>Editar</Drawer.Title>
+              <Drawer.Title style={{ fontWeight: 'bold', fontSize: '20px' }}>{selectedRow ? 'Editar' : 'Agregar'}</Drawer.Title>
               <Drawer.CloseButton />
             </Drawer.Header>
 
             <Drawer.Body>
               <TextInput
-                leftSectionPointerEvents="none"
-                label ="Nombre Completo"
+                label="Nombre Completo"
                 placeholder="Ingresa tu nombre con apellidos"
-                name='name'
+                name="name"
+                value={formData.name} 
+                onChange={e => setFormData({ ...formData, name: e.target.value })} 
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{ padding: '2vh 0vh 3vh 0vh' }} 
               />
 
               <TextInput
-                leftSectionPointerEvents="none"
-                label ="Nombre de Usuario"
+                label="Nombre de Usuario"
                 placeholder="Ingresa tu usuario"
-                name='user'
+                name="user"
+                value={formData.user} 
+                onChange={e => setFormData({ ...formData, user: e.target.value })} 
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{ padding: '0vh 0vh 3vh 0vh' }} 
               />
 
               <NativeSelect
                 label="Rol"
-                value={value}
-                onChange={(event) => setValue(event.currentTarget.value)}
+                value={formData.rol} 
+                onChange={e => setFormData({ ...formData, rol: e.target.value })} 
                 data={['Administrador', 'Usuario']}
-                name='rol'
+                name="rol"
                 withAsterisk
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{ padding: '0vh 0vh 3vh 0vh' }} 
               />
 
               <TextInput
-                leftSectionPointerEvents="none"
-                label ="Correo"
+                label="Correo"
                 placeholder="nombre@dominio.com"
-                name='mail'
+                name="email"
+                value={formData.email} 
+                onChange={e => setFormData({ ...formData, email: e.target.value })} 
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{ padding: '0vh 0vh 3vh 0vh' }} 
               />
 
               <PasswordInput
                 mx="auto"
                 label="Contraseña"
                 placeholder="Contraseña"
-                defaultValue=""
-                name='pass'
-                leftSection={icon}
+                name="pass"
+                leftSection={<IconLock />}
                 visibilityToggleIcon={VisibilityToggleIcon}
                 required
-                style={{padding:'0vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
               />
             
-              <Button>Aceptar</Button>
+              <div style={{ marginTop: '50%', display: 'flex', justifyContent: 'flex-end' }}>
+              <Button onClick={handleSave}>Aceptar</Button>
+              </div>
             </Drawer.Body>
 
         </Drawer.Content>
       </Drawer.Root>
-      
+
       <div className={classes.header}>
         <Title order={2}>Lista de Usuarios</Title>
-
-        <Button variant="light">
-          <IconPlus/>
-          Agregar
-        </Button>
+        <Button variant="light" onClick={handleAddClick}><IconPlus /> Agregar</Button>
       </div>
 
       <div className={classes.search}>
-          <TextInput
-            placeholder="Search by any field"
-            mb="md"
-            leftSection={<IconSearch size={16} stroke={1.5} />}
-            value={search}
-            onChange={handleSearchChange}
-            style={{
-              width: '93%'
-            }}
-          />
-          <Button> <IconSearch/> </Button>
+        <TextInput 
+          placeholder="Buscar..." 
+          leftSection={<IconSearch />} 
+          value={search} 
+          onChange={e => setSearch(e.target.value)} 
+          style={{ width: '93%' }} 
+        />
+
+        <Button> <IconSearch/> </Button>
       </div>
-      
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+    
+      <Table>
         <Table.Tbody>
-          <Table.Tr>
+          <Table.Tr style={{ fontWeight: 'bold' }}>
             <Th
               sorted={sortBy === 'name'}
               reversed={reverseSortDirection}
@@ -318,7 +294,7 @@ export function Table_user() {
               reversed={reverseSortDirection}
               onSort={() => setSorting('email')}
             >
-              Correo electónico
+              Correo electrónico
             </Th>
             
             <Th

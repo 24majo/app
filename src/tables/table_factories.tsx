@@ -1,22 +1,9 @@
 import { useState } from 'react';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, IconPlus, IconEdit, IconTrash } from '@tabler/icons-react';
-import {
-  Center,
-  Group,
-  Table,
-  Title,
-  Text,
-  TextInput,
-  UnstyledButton,
-  Button,
-  Drawer,
-  Modal,
-  NativeSelect,
-  PasswordInput
-} from '@mantine/core';
+import { Center, Group, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, NumberInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
-import { IconLock, IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
+import { ModalDelete } from '../components/modal-delete';
 
 interface RowData {
   name: string;
@@ -156,16 +143,21 @@ export function Table_factory() {
   const [sortedData, setSortedData] = useState(data);
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
-  const [value, setValue] = useState('');
-  const icon = <IconLock size={18} stroke={1.5} />;
+  const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
+  const [selectedRowForDelete, setSelectedRowForDelete] = useState<RowData | null>(null);
 
-  const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) =>
-    reveal ? (
-      <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-    ) : (
-      <IconEyeCheck style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-    );
+  const handleDeleteClick = (row: RowData) => {
+    setSelectedRowForDelete(row);
+    openModal();
+  };
 
+  const deleteRow = () => {
+    if (selectedRowForDelete) {
+      setSortedData((prev) => prev.filter((item) => item.name !== selectedRowForDelete.name));
+    }
+    closeModal();
+  };
+  
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
     setReverseSortDirection(reversed);
@@ -179,6 +171,11 @@ export function Table_factory() {
     setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
+  const handleEditClick = (row: RowData) => {
+    setSelectedRow(row);  
+    openDrawer(); 
+  };
+
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.name}>
       <Table.Td>{row.name}</Table.Td>
@@ -187,55 +184,22 @@ export function Table_factory() {
       <Table.Td>{row.add_line2}</Table.Td>
       <Table.Td>{row.add_line3}</Table.Td>
       <Table.Td>{row.tel}</Table.Td>
-      <Table.Td>
-        <IconEdit size={20} color="gray" onClick={openDrawer} style={{marginRight: 7}}/>
-        <IconTrash size={20} color="gray" onClick={openModal}/>
+      <Table.Td className={classes.actions}>
+        <IconEdit size={20} color="gray" onClick={() => handleEditClick(row)} style={{marginRight: 7}}/>
+        <IconTrash size={20} color="gray" onClick={() => handleDeleteClick(row)} />
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <div className={classes.main}>
-      <Modal 
-        opened={Delete} 
-        onClose={closeModal} 
-        title="Eliminar"
-        centered
-      >
-        <Text
-          style=
-          {{
-            marginBottom: 20  
-          }}
-        >¿Está seguro que quiere eliminar esto?
-        </Text>
-
-        <Button
-          color='red'
-          fullWidth
-          style={{
-            marginBottom: 5
-          }}
-        >
-          Aceptar
-        </Button>
-
-        <Button
-          variant='transparent'
-          color='gray'
-          fullWidth
-        >
-          Cancelar
-        </Button>
-      </Modal>
+      <ModalDelete opened={Delete} onClose={closeModal} onConfirm={deleteRow} />
 
       <Drawer.Root
         className={classes.draw_edit}
         position="right"
         opened={Edit}
         onClose={closeDrawer}
-        // title="Editar"
-        // overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
       >
         <Drawer.Overlay />
         <Drawer.Content>
@@ -247,57 +211,72 @@ export function Table_factory() {
             <Drawer.Body>
               <TextInput
                 leftSectionPointerEvents="none"
-                label ="Nombre Completo"
-                placeholder="Ingresa tu nombre con apellidos"
+                label ="Nombre"
+                placeholder="Ingresa el nombre"
                 name='name'
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{padding: '2vh 0vh 3vh 0vh'}} 
+                value={selectedRow?.name || ''}
               />
 
               <TextInput
                 leftSectionPointerEvents="none"
-                label ="Nombre de Usuario"
-                placeholder="Ingresa tu usuario"
-                name='user'
+                label ="Descripción"
+                placeholder="Ingresa la descripción"
+                name='description'
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
+                value={selectedRow?.description || ''}
               />
 
-              <NativeSelect
-                label="Rol"
-                value={value}
-                onChange={(event) => setValue(event.currentTarget.value)}
-                data={['Administrador', 'Usuario']}
-                name='rol'
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="AddressLine1"
+                placeholder="AddressLine1"
+                name='add_line1'
+                required
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
+                value={selectedRow?.add_line1 || ''}
+              />
+
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="AddressLine2"
+                placeholder="AddressLine2"
+                name='add_line2'
+                required
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
+                value={selectedRow?.add_line2 || ''}
+              />
+
+              <TextInput
+                leftSectionPointerEvents="none"
+                label ="AddressLine3"
+                placeholder="AddressLine3"
+                name='add_line3'
+                required
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
+                value={selectedRow?.add_line3 || ''}
+              />
+
+              <NumberInput 
+                label="Teléfono" 
+                placeholder="4774325436" 
+                hideControls 
                 withAsterisk
-              />
-
-              <TextInput
-                leftSectionPointerEvents="none"
-                label ="Correo"
-                placeholder="nombre@dominio.com"
-                name='mail'
-                required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
                 labelProps={{ style: { fontWeight: 'bold' } }}
-              />
-
-              <PasswordInput
-                mx="auto"
-                label="Contraseña"
-                placeholder="Contraseña"
-                defaultValue=""
-                name='pass'
-                leftSection={icon}
-                visibilityToggleIcon={VisibilityToggleIcon}
-                required
-                style={{padding:'0vh 5vh 5vh 3vh'}}
-                labelProps={{ style: { fontWeight: 'bold' } }}
+                maxLength={10}
+                value={selectedRow?.tel || ''}
               />
             
-              <Button>Aceptar</Button>
+              <div style={{ marginTop: '30%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button>Aceptar</Button>
+              </div>
             </Drawer.Body>
 
         </Drawer.Content>
@@ -326,7 +305,7 @@ export function Table_factory() {
           <Button> <IconSearch/> </Button>
       </div>
       
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+      <Table>
         <Table.Tbody>
           <Table.Tr>
             <Th

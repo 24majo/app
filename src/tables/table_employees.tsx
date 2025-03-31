@@ -1,22 +1,9 @@
 import { useState } from 'react';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, IconPlus, IconEdit, IconTrash } from '@tabler/icons-react';
-import {
-  Center,
-  Group,
-  Table,
-  Title,
-  Text,
-  TextInput,
-  UnstyledButton,
-  Button,
-  Drawer,
-  Modal,
-  NativeSelect,
-  PasswordInput
-} from '@mantine/core';
+import { Center, Group, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, NativeSelect, NumberInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
-import { IconLock, IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
+import { ModalDelete } from '../components/modal-delete';
 
 interface RowData {
   status: string;
@@ -35,8 +22,8 @@ interface ThProps {
 function Th({ children, reversed, sorted, onSort }: ThProps) {
   const Icon = sorted ? (reversed ? IconChevronUp : IconChevronDown) : IconSelector;
   return (
-    <Table.Th className={classes.th}>
-      <UnstyledButton onClick={onSort} className={classes.control}>
+    <Table.Th style={{textAlign: 'center'}}>
+      <UnstyledButton onClick={onSort}>
         <Group justify="space-between">
           <Text fw={500} fz="sm">
             {children}
@@ -143,14 +130,20 @@ export function Table_employ() {
   const [sortBy, setSortBy] = useState<keyof RowData | null>(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [value, setValue] = useState('');
-  const icon = <IconLock size={18} stroke={1.5} />;
-
-  const VisibilityToggleIcon = ({ reveal }: { reveal: boolean }) =>
-    reveal ? (
-      <IconEyeOff style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-    ) : (
-      <IconEyeCheck style={{ width: 'var(--psi-icon-size)', height: 'var(--psi-icon-size)' }} />
-    );
+  const [selectedRow, setSelectedRow] = useState<RowData | null>(null);
+  const [selectedRowForDelete, setSelectedRowForDelete] = useState<RowData | null>(null);
+  
+    const handleDeleteClick = (row: RowData) => {
+      setSelectedRowForDelete(row);
+      openModal();
+    };
+  
+    const deleteRow = () => {
+      if (selectedRowForDelete) {
+        setSortedData((prev) => prev.filter((item) => item.status !== selectedRowForDelete.status));
+      }
+      closeModal();
+    };
 
   const setSorting = (field: keyof RowData) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -165,61 +158,32 @@ export function Table_employ() {
     setSortedData(sortData(data, { sortBy, reversed: reverseSortDirection, search: value }));
   };
 
+  const handleEditClick = (row: RowData) => {
+    setSelectedRow(row);  
+    openDrawer(); 
+  };
+
   const rows = sortedData.map((row) => (
     <Table.Tr key={row.name}>
       <Table.Td>{row.status}</Table.Td>
       <Table.Td>{row.name}</Table.Td>
-      <Table.Td>{row.office}</Table.Td>
-      <Table.Td>{row.access}</Table.Td>
-      <Table.Td>
-        <IconEdit size={20} color="gray" onClick={openDrawer} style={{marginRight: 7}}/>
-        <IconTrash size={20} color="gray" onClick={openModal}/>
+      <Table.Td style={{textAlign: 'center'}}>{row.office}</Table.Td>
+      <Table.Td style={{textAlign: 'center'}}>{row.access}</Table.Td>
+      <Table.Td className={classes.actions}>
+        <IconEdit size={20} color="gray" onClick={() => handleEditClick(row)} style={{marginRight: 7}}/>
+        <IconTrash size={20} color="gray" onClick={() => handleDeleteClick(row)} />
       </Table.Td>
     </Table.Tr>
   ));
 
   return (
     <div className={classes.main}>
-      <Modal 
-        opened={Delete} 
-        onClose={closeModal} 
-        title="Eliminar"
-        centered
-      >
-        <Text
-          style=
-          {{
-            marginBottom: 20  
-          }}
-        >¿Está seguro que quiere eliminar esto?
-        </Text>
-
-        <Button
-          color='red'
-          fullWidth
-          style={{
-            marginBottom: 5
-          }}
-        >
-          Aceptar
-        </Button>
-
-        <Button
-          variant='transparent'
-          color='gray'
-          fullWidth
-        >
-          Cancelar
-        </Button>
-      </Modal>
+      <ModalDelete opened={Delete} onClose={closeModal} onConfirm={deleteRow} />
 
       <Drawer.Root
-        className={classes.draw_edit}
         position="right"
         opened={Edit}
         onClose={closeDrawer}
-        // title="Editar"
-        // overlayProps={{ backgroundOpacity: 0.5, blur: 4 }}
       >
         <Drawer.Overlay />
         <Drawer.Content>
@@ -228,62 +192,54 @@ export function Table_employ() {
               <Drawer.CloseButton />
             </Drawer.Header>
 
-            <Drawer.Body>
+            <Drawer.Body style={{ flexDirection: 'column', paddingBottom: '20px' }}>
               <TextInput
                 leftSectionPointerEvents="none"
                 label ="Nombre Completo"
                 placeholder="Ingresa tu nombre con apellidos"
                 name='name'
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
+                style={{padding: '2vh 0vh 3vh 0vh'}} // Arriba - Izquierda - Abajo - Derecha
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                value={selectedRow?.name || ''}
               />
 
-              <TextInput
-                leftSectionPointerEvents="none"
-                label ="Nombre de Usuario"
-                placeholder="Ingresa tu usuario"
-                name='user'
+              <NumberInput
+                label ="Oficina"
+                placeholder="Ingresa oficina"
+                name='office'
                 required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
                 labelProps={{ style: { fontWeight: 'bold' } }}
+                value={selectedRow?.office || ''}
+              />
+
+              <NumberInput 
+                label="Accesos" 
+                placeholder="0123" 
+                name='access'
+                hideControls 
+                withAsterisk
+                style={{padding: '0vh 0vh 3vh 0vh'}} 
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                value={selectedRow?.access || ''}
               />
 
               <NativeSelect
-                label="Rol"
-                value={value}
+                label="Estatus"
+                // value={value}
                 onChange={(event) => setValue(event.currentTarget.value)}
-                data={['Administrador', 'Usuario']}
-                name='rol'
+                data={['Activo', 'Desactivado']}
+                name='status'
                 withAsterisk
+                labelProps={{ style: { fontWeight: 'bold' } }}
+                value={selectedRow?.status || ''}
               />
 
-              <TextInput
-                leftSectionPointerEvents="none"
-                label ="Correo"
-                placeholder="nombre@dominio.com"
-                name='mail'
-                required
-                style={{padding: '5vh 5vh 5vh 3vh'}}
-                labelProps={{ style: { fontWeight: 'bold' } }}
-              />
-
-              <PasswordInput
-                mx="auto"
-                label="Contraseña"
-                placeholder="Contraseña"
-                defaultValue=""
-                name='pass'
-                leftSection={icon}
-                visibilityToggleIcon={VisibilityToggleIcon}
-                required
-                style={{padding:'0vh 5vh 5vh 3vh'}}
-                labelProps={{ style: { fontWeight: 'bold' } }}
-              />
-            
-              <Button>Aceptar</Button>
+              <div style={{ marginTop: '70%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button>Aceptar</Button>
+              </div>
             </Drawer.Body>
-
         </Drawer.Content>
       </Drawer.Root>
       
@@ -310,7 +266,7 @@ export function Table_employ() {
           <Button> <IconSearch/> </Button>
       </div>
       
-      <Table horizontalSpacing="md" verticalSpacing="xs" miw={700} layout="fixed">
+      <Table>
         <Table.Tbody>
           <Table.Tr>
             <Th
