@@ -1,5 +1,5 @@
 import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink } from '@mantine/core';
-import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout } from '@tabler/icons-react';
+import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout, IconSelector, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import classes from '../styles/Navbar.module.css';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { forwardRef } from 'react';
@@ -33,7 +33,6 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
             <Text size="sm" fw={500}> {name} </Text>
             <Badge variant="light" color="blue" radius="lg" size='xs'>{role}</Badge>
             <IconChevronCompactUp size={16} style={{marginLeft:30}}/>
-            
             </>
           )}
         </div>
@@ -44,7 +43,7 @@ const UserButton = forwardRef<HTMLButtonElement, UserButtonProps>(
 );
 
 export function Lateral() {
-  const isMobile = useMediaQuery('(max-width: 900px)');
+  const isMobile = useMediaQuery('(max-width: 960px)');
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const navigate = useNavigate()
 
