@@ -1,5 +1,5 @@
-import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink } from '@mantine/core';
-import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout, IconSelector, IconChevronDown, IconChevronUp } from '@tabler/icons-react';
+import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Button, Badge, NavLink, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
+import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import classes from '../styles/Navbar.module.css';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import { forwardRef } from 'react';
@@ -46,6 +46,12 @@ export function Lateral() {
   const isMobile = useMediaQuery('(max-width: 960px)');
   const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
   const navigate = useNavigate()
+  const {setColorScheme} = useMantineColorScheme()
+  const computedColorScheme = useComputedColorScheme("light")
+    
+  const color = () => {
+    setColorScheme(computedColorScheme === 'dark' ? 'light' : 'dark')
+  } 
 
   return (
     <AppShell
@@ -124,12 +130,25 @@ export function Lateral() {
             </Menu.Target>
 
             <Menu.Dropdown>
+
+            <Menu.Item 
+              leftSection={
+                computedColorScheme === 'dark' ? <IconSunFilled /> : <IconMoonFilled />
+              }
+              onClick={color} 
+            >
+              <Text>
+                {computedColorScheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+              </Text>
+            </Menu.Item>
+
               <Menu.Item
                 color="red"
-                leftSection={<IconLogout size={14} />}
+                leftSection={<IconLogout size={18} />}
               >
                 Cerrar Sesión
               </Menu.Item>
+
             </Menu.Dropdown>
 
           </Menu>
