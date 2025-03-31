@@ -3,14 +3,10 @@
 }
 
 .root {
-  /* background-color: blueviolet; */
   padding-top: 80px;
-  /* padding-bottom: 80px; */
-  /* --mantine-breakpoint-sm: 768px; */
 }
   
 .label {
-  /* background-color: yellowgreen; */
   text-align: center;
   font-weight: 900;
   font-size: 90px;
@@ -26,15 +22,10 @@
 }
   
 .description {
-  /* background-color: aqua; */
-  /* max-width: 600px; */
   margin: 10vh;
-  /* margin-top: var(--mantine-spacing-xl);
-  margin-bottom: calc(1 * var(--mantine-spacing-xl)); */
 }
 
 .title {
-  /* background-color: cadetblue; */
   text-align: center;
   font-weight: 900;
   font-size: 50px;
@@ -45,8 +36,4 @@
       font-size: 50px;
     }
   }
-}
-
-.button{
-  /* background-color: violet; */
 }
