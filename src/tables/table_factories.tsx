@@ -3,7 +3,7 @@ import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, IconPlus, Ico
 import { Center, Group, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, NumberInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
-import { ModalDelete } from '../components/modal-delete';
+import { ModalDelete } from '../modals/modal-delete';
 
 interface RowData {
   name: string;
@@ -293,8 +293,7 @@ export function Table_factory() {
 
       <div className={classes.search}>
           <TextInput
-            placeholder="Search by any field"
-            mb="md"
+            placeholder="Buscar..."
             leftSection={<IconSearch size={16} stroke={1.5} />}
             value={search}
             onChange={handleSearchChange}

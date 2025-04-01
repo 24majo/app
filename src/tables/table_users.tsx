@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { IconChevronDown, IconChevronUp, IconSearch, IconSelector, IconPlus, IconEdit, IconTrash } from '@tabler/icons-react';
-import { Center, Group, keys, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, NativeSelect, PasswordInput } from '@mantine/core';
+import { Center, Group, keys, Table, Title, Text, TextInput, UnstyledButton, Button, Drawer, Select, PasswordInput } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from '../styles/content_table.module.css'
-import { ModalDelete } from '../components/modal-delete';
+import { ModalDelete } from '../modals/modal-delete';
 import { IconLock, IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
 
 interface RowData {
@@ -212,10 +212,11 @@ export function Table_user() {
                 style={{ padding: '0vh 0vh 3vh 0vh' }} 
               />
 
-              <NativeSelect
+              <Select
                 label="Rol"
                 value={formData.rol} 
-                onChange={e => setFormData({ ...formData, rol: e.target.value })} 
+                placeholder='Elige el tipo de rol'
+                onChange={(value) => setFormData({ ...formData, rol: value ?? '' })}
                 data={['Administrador', 'Usuario']}
                 name="rol"
                 withAsterisk
