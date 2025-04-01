@@ -1,5 +1,4 @@
-import { Container, Button, Checkbox, Title, Text } from '@mantine/core'
-import { TextInput, PasswordInput } from '@mantine/core'
+import { Container, Button, Checkbox, Title, Text,TextInput, PasswordInput } from '@mantine/core'
 import { IconLock, IconEyeCheck, IconEyeOff } from '@tabler/icons-react'
 import './styles/App.css'
 import { useNavigate } from 'react-router-dom'

@@ -1,4 +1,4 @@
-import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Button, Badge, NavLink, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
+import { Code, ScrollArea, AppShell, Burger, Avatar, Group, Text, UnstyledButton, Menu, Badge, NavLink, useMantineColorScheme, useComputedColorScheme } from '@mantine/core';
 import { IconChartLine, IconUsers, IconCube, IconWorld, IconChevronCompactUp, IconLogout, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import classes from '../styles/Navbar.module.css';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
@@ -131,20 +131,20 @@ export function Lateral() {
 
             <Menu.Dropdown>
 
-            <Menu.Item 
-              leftSection={
-                computedColorScheme === 'dark' ? <IconSunFilled /> : <IconMoonFilled />
-              }
-              onClick={color} 
-            >
-              <Text>
-                {computedColorScheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
-              </Text>
-            </Menu.Item>
+              <Menu.Item 
+                leftSection={
+                  computedColorScheme === 'dark' ? <IconSunFilled /> : <IconMoonFilled />
+                }
+                onClick={color} 
+              >
+                <Text>
+                  {computedColorScheme === 'dark' ? 'Modo claro' : 'Modo oscuro'}
+                </Text>
+              </Menu.Item>
 
               <Menu.Item
                 color="red"
-                leftSection={<IconLogout size={18} />}
+                leftSection={<IconLogout size={20} />}
               >
                 Cerrar Sesión
               </Menu.Item>
